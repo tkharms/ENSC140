@@ -3,6 +3,7 @@
 
 ## Retrieve, summarize, and plot USGS river discharge monitoring data ##
 
+library(here)
 library(tidyverse)
 library(dataRetrieval)
 
@@ -19,7 +20,17 @@ pCode <- "00060"
 # this is the parameter code for discharge, in cubic feet per second
 
 Qdat <- readNWISuv(siteNumbers = sites,
-                   parameterCd = pCode)
+                   parameterCd = pCode,
+                   startDate = "2009-01-01",
+                   endDate = "2023-12-01")
+
+## Read in downloaded data
+missi <- read.csv(here("data", "Qmiss.csv"))
+syc <- read.csv(here("data", "QSYC.csv"))
+oh <- read.csv(here("data", "Qoh.csv"))
+spring <- read.csv(here("data", "Qspring.csv"))
+
+Qdat <- bind_rows(missi, syc, oh, spring)
 
 # Rename discharge columns
 Qdat <- Qdat %>% rename(Q_cfs = X_00060_00000)
@@ -29,6 +40,8 @@ Qdat <- Qdat %>% mutate(site = ifelse(site_no == "02225270", "Ohoopee River, GA"
                                   ifelse(site_no == "05200510", "Upper Mississippi, MN",
                                     ifelse(site_no == "09510200", "Sycamore Creek, AZ", "Springbrook Creek, WA"
                                       ))))
+
+
 ##########################
 ### Visualize the data ###
 ##########################

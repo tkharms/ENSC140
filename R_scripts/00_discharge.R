@@ -35,10 +35,13 @@ Qdat <- bind_rows(missi, syc, oh, spring)
 # Rename discharge columns
 Qdat <- Qdat %>% rename(Q_cfs = X_00060_00000)
 
+# Format datetime
+Qdat$dateTime <- as.POSIXct(Qdat$dateTime, format = "%Y-%m-%d %H:%M:%S")
+
 # Add site names
-Qdat <- Qdat %>% mutate(site = ifelse(site_no == "02225270", "Ohoopee River, GA",
-                                  ifelse(site_no == "05200510", "Upper Mississippi, MN",
-                                    ifelse(site_no == "09510200", "Sycamore Creek, AZ", "Springbrook Creek, WA"
+Qdat <- Qdat %>% mutate(site = ifelse(site_no == 2225270, "Ohoopee River, GA",
+                                  ifelse(site_no == 5200510, "Upper Mississippi, MN",
+                                    ifelse(site_no == 9510200, "Sycamore Creek, AZ", "Springbrook Creek, WA"
                                       ))))
 
 
@@ -48,7 +51,7 @@ Qdat <- Qdat %>% mutate(site = ifelse(site_no == "02225270", "Ohoopee River, GA"
 # basic time series plot
 ts.pl <- Qdat %>% ggplot(aes(x = dateTime, y = Q_cfs)) +
                     geom_line() + 
-                    facet_wrap(vars(site), ncol = 2)
+                    facet_wrap(vars(site_no), ncol = 2)
      
 # Different y-axis scales to visualize variation within each site
 ts.scale.pl <- Qdat %>% ggplot(aes(x = dateTime, y = Q_cfs)) +

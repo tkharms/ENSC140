@@ -22,5 +22,6 @@ dat.sum <- dat.sum %>% mutate(Sample = ifelse(Sample == "S", 0, Sample)) %>%
 ############
 pl <- dat.sum %>% ggplot(aes(x = NH4_mgNL_mn, y = Sample)) +
                       geom_pointrange(aes(xmin = NH4_mgNL_mn - NH4_mgNL_SD,  xmax = NH4_mgNL_mn + NH4_mgNL_SD)) +
+                      geom_line() +
                       scale_y_reverse()
 

@@ -27,8 +27,26 @@ Qdat <- readNWISuv(siteNumbers = sites,
 
 write.csv(Qdat, here("data", "Qdat.csv"), row.names = FALSE)
 
+#missi <- Qdat %>% filter(site_no == 05200510)
+#syc <- Qdat %>% filter(site_no == 09510200)
+#spr <- Qdat %>% filter(site_no == 12113346)
+#oho <- Qdat %>% filter(site_no == 02225270)
+
+# Export smaller files for git upload
+#write.csv(missi, here("data", "Qmiss.csv"), row.names = FALSE)
+#write.csv(oho, here("data", "Qoh.csv"), row.names = FALSE)
+#write.csv(spr, here("data", "Qspring.csv"), row.names = FALSE)
+#write.csv(syc, here("data", "QSYC.csv"), row.names = FALSE)
+
 ## Read in downloaded data
-Qdat <- read.csv(here("data", "Qdat.csv"))
+# Qdat <- read.csv(here("data", "Qdat.csv"))
+missi <- read.csv(here("data", "Qmiss.csv"))
+syc <- read.csv(here("data", "QSYC.csv"))
+spr <- read.csv(here("data", "Qspring.csv"))
+oho <- read.csv(here("data", "Qoh.csv"))
+
+# Merge sites into single dataframe
+Qdat <- bind_rows(missi, syc, spr, oho)
 
 # Rename discharge columns
 Qdat <- Qdat %>% rename(Q_cfs = X_00060_00000)

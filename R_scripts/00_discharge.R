@@ -3,6 +3,7 @@
 
 ## Retrieve, summarize, and plot USGS river discharge monitoring data ##
 
+# Load libraries
 library(here)
 library(tidyverse)
 library(dataRetrieval)
@@ -11,10 +12,10 @@ library(dataRetrieval)
 ### Data ###
 ############
 ## Use the dataRetrieval package to download river flow data from USGS
-sites <- c( "05200510", #Miss
+sites <- c( "05200510", #UMS
             "09510200", #SYC
-            "12113346", #SpringbrookWA
-            "02225270") #OhoopeeGA
+            "12113346", #SPR
+            "02225270") #OHO
 
 pCode <- "00060"
 # this is the parameter code for discharge, in cubic feet per second
@@ -153,6 +154,8 @@ Qmn.pl <- Qdat.summ %>% ggplot(aes(x = site, y = Q_mn)) +
                                 axis.title.y = element_text(size = 18),
                                 axis.title.x = element_blank()
                           )
+
+head(Qdat)
 
 ################
 ### Exercise ###

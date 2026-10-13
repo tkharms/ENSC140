@@ -47,11 +47,20 @@ wash.3d <- dat %>% filter(site == "washington") %>%
   scale_y_reverse() +
   scale_color_viridis()
 
+# single year
+wash.3d.yr <- dat %>% filter(site == "washington") %>%
+  filter(dateTime > "2018-12-31" & dateTime < "2020-01-01") %>%
+  ggplot(aes(x = dateTime, y = depth_m)) +
+  geom_line(aes(color = temp), linewidth = 6) +
+  scale_y_reverse() +
+  scale_color_viridis()
+
 ################
 ### Exercise ###
 ################
-### 1) Does the lake stratify? Hypothesize about how the lake does or does not stratify.
+### Choose a lake other than Lake Washington
+## 1) Does the lake stratify? Hypothesize about how the lake does or does not stratify.
         
-### 2) What are the depths of the epilimnion, metalimnion, and hypolimnion (as relevant)? 
+## 2) What are the depths of the epilimnion, metalimnion, and hypolimnion (as relevant)? 
 
-### 3) Does the lake mix? How often? When? Hypothesize about why the does or doesn't mix.
+## 3) Does the lake mix? How often? When? Hypothesize about why the does or doesn't mix.

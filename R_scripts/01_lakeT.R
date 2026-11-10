@@ -22,7 +22,7 @@ dat <- dat %>% mutate(dateTime = as.POSIXct(dateTime, format = "%Y-%m-%d %H:%M:%
 ## L Washington ##
 ## Temperature profile on a single date/time
 wash.dep <- dat %>% filter(site == "washington") %>%
-  filter(dateTime >= "2013-08-21 08:00:00" & dateTime <= "2013-08-21 12:00:00") %>%
+  filter(dateTime >= "2023-08-21 08:00:00" & dateTime <= "2023-08-21 12:00:00") %>%
   ggplot(aes(x = temp, y = depth_m)) +
   geom_point(size = 3) +
   geom_line() +

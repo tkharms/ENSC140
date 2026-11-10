@@ -132,6 +132,91 @@ ts.WY25.pl <- Qdat %>% filter(dateTime >= "2024-10-01" & dateTime <= "2025-09-27
 #export pdf
 ggsave(ts.WY25.pl, path = "plots", file = "QWY25.pdf", width = 8, height = 5, units = "in")
 
+## Exam figures ##
+## Use the dataRetrieval package to download river flow data from USGS
+exsites <- c( "09498500", #Salt
+              "11078000", #Santa Ana
+             
+              "15514000") #Chena
+
+pCode <- "00060"
+# this is the parameter code for discharge, in cubic feet per second
+
+# Download data from USGS.
+Qdat <- readNWISuv(siteNumbers = exsites,
+                   parameterCd = pCode,
+                   startDate = "2025-10-01",
+                   endDate = "2026-10-01")
+
+sal <- readNWISuv(siteNumbers = 15484000,
+                   parameterCd = pCode,
+                   startDate = "2024-10-01",
+                   endDate = "2025-10-01")
+
+# change dates for Salcha to 2025 to allow plotting on same axis as other sites for exam purposes only
+sal <- sal %>% mutate(dateTime = dateTime %m+% years(1))
+
+# Merge sites into single dataframe
+Qdatall <- bind_rows(Qdat, sal)
+
+# Rename discharge columns
+Qdatall <- Qdatall %>% rename(Q_cfs = X_00060_00000)
+
+# Format datetime
+Qdatall$dateTime <- as.POSIXct(Qdatall$dateTime, format = "%Y-%m-%d %H:%M:%S")
+
+# Add site names
+Qdatall <- Qdatall %>% mutate(site = ifelse(site_no == "09498500", "Salt",
+                                        ifelse(site_no == "11078000", "Santa Ana",
+                                            ifelse(site_no == "15514000", "Chena", "Salcha"
+                                             ))))
+
+Qdatall <- Qdatall %>% mutate(code = ifelse(site_no == "09498500", "River A",
+                                            ifelse(site_no == "11078000", "River 1",
+                                                   ifelse(site_no == "15514000", "River B", "River 2"
+                                                   ))))
+
+## Plots ##
+set1.pl <- Qdatall %>% filter(site == "Chena" | site == "Salt") %>%
+                    ggplot(aes(x = dateTime, y = Q_cfs)) +
+                      geom_line() + 
+                      ylab("discharge (cfs)") +
+                      facet_wrap(vars(code), ncol = 1, scales = "free_y") +
+                      theme_bw() +
+                      theme(panel.grid = element_blank(),
+                            panel.border = element_rect(color = "black", linewidth = 1),
+                            axis.text = element_text(size = 18),
+                            axis.title.y = element_text(size = 18),
+                            axis.title.x = element_blank(),
+                            strip.text = element_text(size = 18),
+                            strip.background = element_rect(color="black", linewidth = 1),
+                            plot.margin = margin(t = 0, r = 1, b = 0, l = 0, unit = "cm")
+  )
+
+# Export pdf of figure
+ggsave(set1.pl, path = "plots", file = "Fig3A.pdf", width = 7, height = 8, units = "in")
+ggsave(set1.pl, path = "plots", file = "Fig3A.jpeg", width = 7, height = 8, units = "in")
+
+set2.pl <- Qdatall %>% filter(site == "Salcha" | site == "Santa Ana") %>%
+  ggplot(aes(x = dateTime, y = Q_cfs)) +
+  geom_line() + 
+  ylab("discharge (cfs)") +
+  facet_wrap(vars(code), ncol = 1, scales = "free") +
+  theme_bw() +
+  theme(panel.grid = element_blank(),
+        panel.border = element_rect(color = "black", linewidth = 1),
+        axis.text = element_text(size = 18),
+        axis.title.y = element_text(size = 18),
+        axis.title.x = element_blank(),
+        strip.text = element_text(size = 18),
+        strip.background = element_rect(color="black", linewidth = 1),
+        plot.margin = margin(t = 0, r = 1, b = 0, l = 0, unit = "cm")
+  )
+
+# Export pdf of figure
+ggsave(set2.pl, path = "plots", file = "Fig3B.pdf", width = 7, height = 8, units = "in")
+ggsave(set2.pl, path = "plots", file = "Fig3B.jpeg", width = 7, height = 8, units = "in")
+
 #################
 ### Summarize ###
 #################
